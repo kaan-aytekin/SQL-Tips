@@ -101,24 +101,97 @@ select State, count(State) as 'Occurence' from players group by State
 
 select namelast,namefirst,sum(salary) from players group by namelast,namefirst
 
+select namefirst+' '+namelast from players
 
 
 
+insert into players (namelast,namefirst) values ('aytekin','Kaan')
+update players set namelast='Aytekin',namefirst='Kaan' where namelast='aytekin' and namefirst='Kaan'
+delete from players where namelast='Aytekin' and namefirst='Kaan'
+
+select namefirst,namelast from players where namefirst in (select namefirst from players where namelast like '%tekin%')
+select namefirst,namelast from players where bday not between 1990 and 2000
+
+select City from Customers union all select City from Suppliers --Allow duplicates
+select City from Customers union select City from Suppliers --Do not allow duplicates
+select city from Customers except select City from Suppliers
+select city from Customers intersect select City from Suppliers
 
 
 
+select count(CustomerID),Country from Customers group by Country having count(CustomerID)>5 order by count(CustomerID) desc
+
+select namefirst from players where exists (select namelast from players where namelast like '%aytekin%')
+
+select ProductName from Products where ProductID = any (select ProductID from OrderDetails where Quantity = 10) --If any quantity is 10: return
+select ProductName from Products where ProductID = all (select ProductID from OrderDetails where Quantity = 10) --If all quantities are 10: return
+
+select * into NewTable in NewDB from players
+select * into NewTable from players
+select * into NewTable from players where 1=0 --Create an empty NewTable
+
+insert into Table2 select * from Table1
+
+select ifnull(namelast,'No Name') from players --Return default value if encounterde null
+
+create procedure SQLCOMMAND as
+	select * from players
+	go --Wait for the line above to finish before executing the line below
+exec SQLCOMMAND
+
+create database NewDB
+
+drop database NewDB
+
+backup database NewDB to disk '/Users/KAAN/Desktop/NewDB'
+backup database NewDB to disk '/Users/KAAN/Desktop/NewDB' where differential --Only backup the changing parts
+
+create table players(
+	namefirst	varchar(25),
+	namelast	varchar(25),
+	bday		date
+)
+create table as (select * from players where namelast like '%tekin%')
+
+create table players(
+	namefirst	varchar(25) not null,
+	namelast	varchar(25) not null,
+	bday		date,
+	age 		int,
+	check(age)>0 and check(age)<100
+	birthPlace  varchar(30) default 'Unknown'
+	TCKN		int 		not null,
+	TCKN_SK		int,
+	CreditCard	int,
+	ID 			int 		not null auto_increment=0,
+	unique(TCKN_SK),
+	primary key (ID),
+	foreign key (IBAN) references BankingDB(IBAN),
+	constraint CC_Constraint unique(CreditCard,TCKN_SK),
+	constraint PK_Person primary key(ID,namelast)
+)
 
 
+drop table players --delete the table
+truncate table players --cleanse the table
+
+alter table players add email varchar(30)
+alter table players drop column email
+alter table players alter column email varchar(20) not null unique
+alter table players add constraint CC_Constraint unique(CreditCard)
+alter table players drop constraint CC_Constraint unique(CreditCard)
+
+create index IndexID on players (*)
+create unique index IndexID on players (*)
+drop index IndexID on players
 
 
+--  	DATE - format YYYY-MM-DD
+--		DATETIME - format: YYYY-MM-DD HH:MI:SS
+--   	TIMESTAMP - format: YYYY-MM-DD HH:MI:SS
+--   	YEAR - format YYYY or YY
 
-
-
-
-
-
-
-
+create view NewView as select * from players where namelast like '%tekin%'
 
 
 
